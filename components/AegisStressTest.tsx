@@ -180,24 +180,43 @@ export default function AegisStressTest({ onRunTest }: AegisStressTestProps) {
         <div className="text-sm text-slate-600">AI Financial Stress Testing</div>
       </nav>
 
-      <section className="bg-[#F9FAFB] pt-20 pb-16 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-xs font-medium tracking-widest text-[#0F766E] mb-4">FOR INDONESIAN INVESTORS</div>
-          <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mx-auto max-w-[600px] leading-tight">
-            Know your risks before it&apos;s too late.
-          </h1>
-          <p className="text-lg text-slate-500 mt-6 mx-auto max-w-[500px]">
-            Tell us about your portfolio. Aegis will show what could happen and what you should prepare for.
-          </p>
-          <div className="mt-8 mx-auto max-w-[600px] bg-white border border-[#E5E7EB] py-4 px-6 rounded-2xl shadow-sm text-left flex gap-4 items-start">
-            <span className="text-2xl mt-1">💡</span>
-            <div>
-              <p className="text-sm font-semibold text-slate-800 mb-1">Post-FIRE Simulation</p>
-              <p className="text-sm text-slate-500 leading-relaxed">
-                Aegis is designed to simulate whether your funds will survive various crisis scenarios after you stop working (early or normal retirement).
-              </p>
+
+
+      <section className="bg-[#F9FAFB] pt-12 pb-12 px-6">
+        <div className="max-w-5xl mx-auto flex flex-col-reverse md:flex-row items-center gap-6 md:gap-8">
+
+          {/* Left — Narasi */}
+          <div className="flex-1 text-center md:text-left">
+            <div className="text-xs font-medium tracking-widest text-[#0F766E] mb-4">FOR INDONESIAN INVESTORS</div>
+            <h1 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight mb-5">
+              Know your risks<br className="hidden md:block" /> before it&apos;s too late.
+            </h1>
+            <p className="text-lg text-slate-500 max-w-[480px] mb-8 mx-auto md:mx-0">
+              Tell us about your portfolio. Aegis will show what could happen and what you should prepare for.
+            </p>
+            <div className="bg-white border border-[#E5E7EB] py-4 px-6 rounded-2xl shadow-sm text-left flex gap-4 items-start max-w-[480px] mx-auto md:mx-0">
+              <span className="text-2xl mt-0.5">💡</span>
+              <div>
+                <p className="text-sm font-semibold text-slate-800 mb-1">Post-FIRE Simulation</p>
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  Aegis simulates whether your funds will survive various crisis scenarios after you stop working — early or normal retirement.
+                </p>
+              </div>
             </div>
           </div>
+
+          {/* Right — Mascot */}
+          <div className="shrink-0 flex justify-center">
+            <Image
+              src="/Athena_1.png"
+              alt="Aegis mascot — Athena guarding your retirement"
+              width={380}
+              height={380}
+              className="drop-shadow-xl"
+              priority
+            />
+          </div>
+
         </div>
       </section>
 
