@@ -1,0 +1,10 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <path
+    d="M100 24 L172 52 L172 104 C172 142 142 168 100 180 C58 168 28 142 28 104 L28 52 Z"
+    fill="#4338CA"
+  />
+  <path
+    d="M100 70 L132 132 L120 132 L100 92 L80 132 L68 132 Z"
+    fill="white"
+  />
+</svg>

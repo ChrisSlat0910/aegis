@@ -11,9 +11,9 @@ export function buildAnalysisPrompt(profile: UserProfile, alreadyRetired: boolea
   const withdrawalRate = ((annualBurn / profile.targetFundMillions) * 100).toFixed(1);
 
   const formatRupiah = (millions: number): string => {
-    if (millions >= 1000000) return `Rp ${(millions / 1000000).toFixed(1)} Triliun`;
-    if (millions >= 1000) return `Rp ${(millions / 1000).toFixed(1)} Miliar`;
-    return `Rp ${millions.toLocaleString('id-ID')} Juta`;
+    if (millions >= 1000000) return `Rp ${(millions / 1000000).toFixed(1)} Trillion`;
+    if (millions >= 1000) return `Rp ${(millions / 1000).toFixed(1)} Billion`;
+    return `Rp ${millions.toLocaleString('id-ID')} Million`;
   };
 
   const stocksAmount = profile.targetFundMillions * profile.allocation.stocks / 100;
@@ -22,61 +22,61 @@ export function buildAnalysisPrompt(profile: UserProfile, alreadyRetired: boolea
   const cryptoAmount = profile.targetFundMillions * profile.allocation.crypto / 100;
 
   const retirementContext = alreadyRetired
-    ? `- Status: SUDAH PENSIUN — simulasi dimulai sekarang (${retirementYear})
-- Usia saat ini: ${profile.currentAge} tahun
-- Horizon simulasi: 30 tahun ke depan (hingga usia ${lifeExpectancy} tahun)`
-    : `- Status: BELUM PENSIUN — akan pensiun dalam ${yearsToRetirement} tahun
-- Usia sekarang: ${profile.currentAge} tahun | Usia pensiun: ${profile.retirementAge} tahun
-- Pensiun dimulai: tahun ${retirementYear} | Simulasi berakhir: usia ${lifeExpectancy} tahun`;
+    ? `- Status: ALREADY RETIRED — simulation starts now (${retirementYear})
+- Current age: ${profile.currentAge} years old
+- Simulation horizon: 30 years ahead (until age ${lifeExpectancy})`
+    : `- Status: NOT YET RETIRED — will retire in ${yearsToRetirement} years
+- Current age: ${profile.currentAge} | Retirement age: ${profile.retirementAge}
+- Retirement starts: year ${retirementYear} | Simulation ends: age ${lifeExpectancy}`;
 
   const saranContext = alreadyRetired
-    ? `Investor SUDAH PENSIUN. overallVerdict harus fokus pada:
-- Kondisi portofolio saat ini dan risiko jangka pendek
-- Langkah konkret yang bisa dilakukan SEKARANG (rebalancing, kurangi pengeluaran, cari pendapatan pasif)
-- Tone: tidak ada waktu akumulasi lagi, prioritaskan proteksi dan keberlanjutan dana
-- Hindari saran yang butuh waktu panjang seperti tingkatkan tabungan bulanan`
-    : `Investor BELUM PENSIUN, masih punya ${yearsToRetirement} tahun akumulasi. overallVerdict harus fokus pada:
-- Apa yang bisa diperbaiki SEBELUM pensiun
-- Langkah konkret: rebalancing alokasi, tingkatkan tabungan, kurangi target pengeluaran
-- Tone: masih ada waktu, ini yang bisa kamu lakukan sekarang untuk memperkuat posisi
-- Berikan harapan yang realistis, bukan hanya peringatan`;
+    ? `Investor IS ALREADY RETIRED. overallVerdict must focus on:
+- Current portfolio condition and short-term risks
+- Concrete steps that can be taken NOW (rebalancing, reduce expenses, find passive income)
+- Tone: no more accumulation time, prioritize protection and fund sustainability
+- Avoid advice that requires long time horizons like "increase monthly savings"`
+    : `Investor IS NOT YET RETIRED, still has ${yearsToRetirement} years of accumulation. overallVerdict must focus on:
+- What can be improved BEFORE retirement
+- Concrete steps: rebalance allocation, increase savings, reduce expense targets
+- Tone: there is still time, here is what you can do now to strengthen your position
+- Provide realistic hope, not just warnings`;
 
   const alternativeSolutionInstruction = alreadyRetired
-    ? `- alternativeSolution: null (investor sudah pensiun, tidak relevan)`
-    : `- alternativeSolution: Jika ada minimal 1 skenario dengan survivalYears < 30, hitung:
-  * minimumFund: estimasi total dana minimum dalam format Rupiah Indonesia (Juta/Miliar/Triliun) agar survive SEMUA skenario dengan withdrawal rate ${withdrawalRate}% yang sama
-  * recommendedAllocation: komposisi portofolio lebih defensif untuk withdrawal rate ${withdrawalRate}% — total stocks+bonds+cash+crypto HARUS = 100
-  * explanation: 2-3 kalimat Bahasa Indonesia mengapa dana dan komposisi tersebut lebih aman
-  Jika semua skenario survived (survivalYears >= 30), return null untuk field ini`;
+    ? `- alternativeSolution: null (investor is already retired, not relevant)`
+    : `- alternativeSolution: If there is at least 1 scenario with survivalYears < 30, calculate:
+  * minimumFund: estimated minimum total fund in IDR format (Million/Billion/Trillion) to survive ALL scenarios with the same withdrawal rate of ${withdrawalRate}%
+  * recommendedAllocation: more defensive portfolio composition for withdrawal rate ${withdrawalRate}% — total stocks+bonds+cash+crypto MUST = 100
+  * explanation: 2-3 sentences in English explaining why that fund size and composition is safer
+  If all scenarios survived (survivalYears >= 30), return null for this field`;
 
-  return `Kamu adalah analis keuangan senior Aegis yang sedang berbicara langsung kepada seorang investor Indonesia. Buat laporan stress test portofolio Post-FIRE yang personal, realistis, dan dalam Bahasa Indonesia.
+  return `You are a senior financial analyst at Aegis speaking directly to an Indonesian investor. Generate a Post-FIRE portfolio stress test report that is personal, realistic, and in English.
 
-DATA PORTOFOLIO INVESTOR:
+INVESTOR PORTFOLIO DATA:
 ${retirementContext}
-- Alokasi: Saham ${profile.allocation.stocks}% (${formatRupiah(stocksAmount)}), Obligasi ${profile.allocation.bonds}% (${formatRupiah(bondsAmount)}), Kas ${profile.allocation.cash}% (${formatRupiah(cashAmount)}), Kripto ${profile.allocation.crypto}% (${formatRupiah(cryptoAmount)})
-- Total Dana: ${formatRupiah(profile.targetFundMillions)}
-- Pengeluaran: ${formatRupiah(profile.monthlyExpenseMillions)}/bulan (${formatRupiah(annualBurn)}/tahun)
-- Rasio penarikan: ${withdrawalRate}% per tahun
-- Tanpa pertumbuhan, dana cukup untuk: ${burnYears} tahun
+- Allocation: Stocks ${profile.allocation.stocks}% (${formatRupiah(stocksAmount)}), Bonds ${profile.allocation.bonds}% (${formatRupiah(bondsAmount)}), Cash ${profile.allocation.cash}% (${formatRupiah(cashAmount)}), Crypto ${profile.allocation.crypto}% (${formatRupiah(cryptoAmount)})
+- Total Fund: ${formatRupiah(profile.targetFundMillions)}
+- Expenses: ${formatRupiah(profile.monthlyExpenseMillions)}/month (${formatRupiah(annualBurn)}/year)
+- Withdrawal rate: ${withdrawalRate}% per year
+- Without growth, fund lasts: ${burnYears} years
 
-INSTRUKSI PENTING:
-1. Semua output WAJIB dalam Bahasa Indonesia
-2. Selalu gunakan "kamu" dan "portofoliomu" — bicara langsung ke investor, JANGAN gunakan "kami"
-3. Semua skenario WAJIB terjadi SETELAH tahun ${retirementYear}
-4. Tahun skenario minimum adalah ${retirementYear}, maksimum ${retirementYear + 25}
-5. Sebut usia investor saat skenario terjadi (usia = ${profile.currentAge} + (tahun skenario - ${retirementYear}))
-6. Nama skenario harus realistis, spesifik, dan relevan dengan kondisi ekonomi global dan Indonesia. Gunakan pola historis sebagai inspirasi tapi JANGAN copy nama atau tahun yang sama persis
-7. Deskripsi harus terasa seperti laporan analis sungguhan — sebut angka konkret dalam format Rupiah Indonesia (Juta/Miliar/Triliun), trigger ekonomi yang masuk akal, dan dampak bertahap yang realistis
-8. riskLevel harus persis "high", "medium", atau "low" (huruf kecil)
-9. chartData: tepat 6 titik dari tahun ${retirementYear} sampai ${retirementYear + 30}, fundValue WAJIB dalam satuan JUTA RUPIAH (contoh: dana Rp 5 Miliar = 5000, bukan 5000000000)
-10. survivalYears: tahun ke berapa (1-30) dana habis, atau 30 jika selamat
-11. Buat 3 skenario BERBEDA jenisnya yang paling relevan dengan alokasi portofolio spesifik investor ini
-12. portfolioNarrative: analisis kondisi spesifik dalam format Rupiah Indonesia yang mudah dipahami, sebut rasio penarikan ${withdrawalRate}% dan implikasinya
-13. safeWithdrawalRate: angka dalam persen antara 1.0 sampai 6.0, contoh: 3.5 bukan 0.035 dan bukan 35
+IMPORTANT INSTRUCTIONS:
+1. All output MUST be in English
+2. Always use "you" and "your portfolio" — speak directly to the investor
+3. All scenarios MUST occur AFTER year ${retirementYear}
+4. Minimum scenario year is ${retirementYear}, maximum ${retirementYear + 25}
+5. Mention investor's age when scenario occurs (age = ${profile.currentAge} + (scenario year - ${retirementYear}))
+6. Scenario names must be realistic and specific — inspired by historical crisis patterns but NOT copying exact names or years. Create scenarios that feel plausible based on current economic trends
+7. Descriptions must read like a real analyst report — mention concrete figures in IDR format (Million/Billion/Trillion), realistic economic triggers, and gradual realistic impact
+8. riskLevel must be exactly "high", "medium", or "low" (lowercase)
+9. chartData: exactly 6 data points from year ${retirementYear} to ${retirementYear + 30}, fundValue MUST be in MILLION IDR units (example: Rp 5 Billion fund = 5000, NOT 5000000000)
+10. survivalYears: which year (1-30) fund hits zero, or 30 if it survives
+11. Create 3 DIFFERENT scenario types most relevant to this investor's specific allocation
+12. portfolioNarrative: specific analysis in IDR format that is easy to understand, mention withdrawal rate ${withdrawalRate}% and its implications
+13. safeWithdrawalRate: number in percent between 1.0 and 6.0, example: 3.5 NOT 0.035 and NOT 35
 14. ${saranContext}
-15. Dalam deskripsi dan narasi, SELALU tulis angka uang dalam format Indonesia: Juta, Miliar, atau Triliun
+15. In descriptions and narratives, ALWAYS write monetary amounts in IDR format: Million, Billion, or Trillion
 16. ${alternativeSolutionInstruction}
-17. HANYA kembalikan JSON mentah, tanpa markdown, tanpa backtick
+17. Return ONLY raw JSON, no markdown, no backticks
 
-{"scenarios":[{"name":"string","year":"string — tahun ${retirementYear} atau lebih","description":"string — 2-3 kalimat Bahasa Indonesia, angka Rupiah, sebut usia investor","probability":"Low|Medium|High","riskLevel":"high|medium|low","impact":{"stocks":number,"bonds":number,"cash":number,"crypto":number},"survivalYears":number,"survivalAmount":number,"chartData":[{"year":number,"fundValue":number}],"verdict":"string — satu kalimat jujur Bahasa Indonesia"}],"portfolioNarrative":"string — 2-3 kalimat Bahasa Indonesia","overallVerdict":"string — mulai dengan Aegis menyarankan...","safeWithdrawalRate":number,"alternativeSolution":null atau {"minimumFund":"string Rupiah","recommendedAllocation":{"stocks":number,"bonds":number,"cash":number,"crypto":number},"explanation":"string Bahasa Indonesia"}}`;
+{"scenarios":[{"name":"string — realistic crisis name in English","year":"string — year ${retirementYear} or later","description":"string — 2-3 sentences in English like an analyst report, IDR amounts, mention investor age","probability":"Low|Medium|High","riskLevel":"high|medium|low","impact":{"stocks":number,"bonds":number,"cash":number,"crypto":number},"survivalYears":number,"survivalAmount":number,"chartData":[{"year":number,"fundValue":number}],"verdict":"string — one honest blunt sentence in English"}],"portfolioNarrative":"string — 2-3 sentences in English with correct IDR format","overallVerdict":"string — 2-3 sentences in English, start with Aegis recommends...","safeWithdrawalRate":number between 1.0-6.0,"alternativeSolution":null or {"minimumFund":"string IDR format","recommendedAllocation":{"stocks":number,"bonds":number,"cash":number,"crypto":number},"explanation":"string in English"}}`;
 }
